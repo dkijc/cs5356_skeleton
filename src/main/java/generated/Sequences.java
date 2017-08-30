@@ -11,7 +11,7 @@ import org.jooq.impl.SequenceImpl;
 
 
 /**
- * Convenience access to all sequences in public
+ * Convenience access to all sequences in PUBLIC
  */
 @Generated(
 	value = {
@@ -24,7 +24,7 @@ import org.jooq.impl.SequenceImpl;
 public class Sequences {
 
 	/**
-	 * The sequence <code>public.system_sequence_a79c0860_5caa_4fce_b727_82ed29a74b9c</code>
+	 * The sequence <code>PUBLIC.SYSTEM_SEQUENCE_C1963DAD_2536_4AE3_9529_C2952841F7D6</code>
 	 */
-	public static final Sequence<Long> SYSTEM_SEQUENCE_A79C0860_5CAA_4FCE_B727_82ED29A74B9C = new SequenceImpl<Long>("system_sequence_a79c0860_5caa_4fce_b727_82ed29a74b9c", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT);
+	public static final Sequence<Long> SYSTEM_SEQUENCE_C1963DAD_2536_4AE3_9529_C2952841F7D6 = new SequenceImpl<Long>("SYSTEM_SEQUENCE_C1963DAD_2536_4AE3_9529_C2952841F7D6", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT);
 }
