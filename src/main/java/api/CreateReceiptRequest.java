@@ -14,3 +14,7 @@ public class CreateReceiptRequest {
     @Min(0)
     public BigDecimal value;
 }
+
+
+
+

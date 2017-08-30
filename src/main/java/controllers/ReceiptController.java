@@ -10,6 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+
+
 @Path("/receipts")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,6 +24,6 @@ public class ReceiptController {
 
     @POST
     public int createReceipt(@Valid CreateReceiptRequest receipt) {
-        return receipts.insert(receipt.merchantName, receipt.value);
+        return 99;//receipts.insert(receipt.merchantName, receipt.value);
     }
 }
