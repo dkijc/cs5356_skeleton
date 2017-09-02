@@ -42,4 +42,8 @@ public class CreateReceiptRequestTest {
         assertThat(validator.validate(receipt), hasSize(1));
     }
 
+    @Test
+    public void testMissingTags() {
+
+    }
 }
