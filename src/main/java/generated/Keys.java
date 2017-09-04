@@ -66,6 +66,6 @@ public class Keys {
 	}
 
 	private static class ForeignKeys0 extends AbstractKeys {
-		public static final ForeignKey<TagsRecord, ReceiptsRecord> CONSTRAINT_2 = createForeignKey(generated.Keys.CONSTRAINT_F, Tags.TAGS, Tags.TAGS.RECEIPTID);
+		public static final ForeignKey<TagsRecord, ReceiptsRecord> CONSTRAINT_2 = createForeignKey(generated.Keys.CONSTRAINT_F, Tags.TAGS, Tags.TAGS.RECEIPT);
 	}
 }

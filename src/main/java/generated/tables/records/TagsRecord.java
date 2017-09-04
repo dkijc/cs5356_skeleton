@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TagsRecord extends UpdatableRecordImpl<TagsRecord> implements Record3<Integer, String, Integer> {
 
-	private static final long serialVersionUID = -1821753508;
+	private static final long serialVersionUID = -671937833;
 
 	/**
 	 * Setter for <code>public.tags.id</code>.
@@ -59,16 +59,16 @@ public class TagsRecord extends UpdatableRecordImpl<TagsRecord> implements Recor
 	}
 
 	/**
-	 * Setter for <code>public.tags.receiptid</code>.
+	 * Setter for <code>public.tags.receipt</code>.
 	 */
-	public void setReceiptid(Integer value) {
+	public void setReceipt(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>public.tags.receiptid</code>.
+	 * Getter for <code>public.tags.receipt</code>.
 	 */
-	public Integer getReceiptid() {
+	public Integer getReceipt() {
 		return (Integer) getValue(2);
 	}
 
@@ -125,7 +125,7 @@ public class TagsRecord extends UpdatableRecordImpl<TagsRecord> implements Recor
 	 */
 	@Override
 	public Field<Integer> field3() {
-		return Tags.TAGS.RECEIPTID;
+		return Tags.TAGS.RECEIPT;
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class TagsRecord extends UpdatableRecordImpl<TagsRecord> implements Recor
 	 */
 	@Override
 	public Integer value3() {
-		return getReceiptid();
+		return getReceipt();
 	}
 
 	/**
@@ -175,7 +175,7 @@ public class TagsRecord extends UpdatableRecordImpl<TagsRecord> implements Recor
 	 */
 	@Override
 	public TagsRecord value3(Integer value) {
-		setReceiptid(value);
+		setReceipt(value);
 		return this;
 	}
 
@@ -204,11 +204,11 @@ public class TagsRecord extends UpdatableRecordImpl<TagsRecord> implements Recor
 	/**
 	 * Create a detached, initialised TagsRecord
 	 */
-	public TagsRecord(Integer id, String tag, Integer receiptid) {
+	public TagsRecord(Integer id, String tag, Integer receipt) {
 		super(Tags.TAGS);
 
 		setValue(0, id);
 		setValue(1, tag);
-		setValue(2, receiptid);
+		setValue(2, receipt);
 	}
 }

@@ -10,9 +10,10 @@ CREATE TABLE receipts (
 
 CREATE TABLE tags (
   id INT UNSIGNED AUTO_INCREMENT,
-  tag VARCHAR(25),
-  receiptId INT,
-  FOREIGN KEY(receiptId) REFERENCES receipts(id),
+  tag VARCHAR(255),
+  tagObj OTHER,
+  receipt INT,
+  FOREIGN KEY (receipt) REFERENCES receipts(id),
 
   PRIMARY KEY (id)
 );

@@ -8,7 +8,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-@Path("/NetId")
+@Path("/netid")
 public class NetIdController {
     @GET
     public String getNetId() {
