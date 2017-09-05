@@ -45,9 +45,9 @@ public class CreateReceiptRequestTest {
     @Test
     public void testValidAmountType() {
       CreateReceiptRequest receipt = new CreateReceiptRequest();
-      receipt.amount = "12.40";
+      receipt.amount = new BigDecimal(12.44);;
 
       validator.validate(receipt);
-      assertThat(receipt.amount, is(not(equalTo(Integer))));
+      assertThat(receipt.amount.toString(), is(not(equalTo(BigDecimal.class))));
     }
 }
