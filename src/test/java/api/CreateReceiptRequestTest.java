@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.*;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 
 public class CreateReceiptRequestTest {
@@ -43,11 +44,12 @@ public class CreateReceiptRequestTest {
     }
 
     @Test
-    public void testValidAmountType() {
+    public void testInValidAmountType() {
       CreateReceiptRequest receipt = new CreateReceiptRequest();
       receipt.amount = new BigDecimal(12.44);;
-
+      String amount = "12.44";
       validator.validate(receipt);
-      assertThat(receipt.amount.toString(), is(not(BigDecimal.class)));
+
+      assertNotEquals(receipt.amount, amount);
     }
 }
