@@ -48,6 +48,6 @@ public class CreateReceiptRequestTest {
       receipt.amount = "12.40";
 
       validator.validate(receipt);
-      assertThat(receipt.amount, is(not(equalTo(Integer))))
+      assertThat(receipt.amount, is(not(equalTo(Integer))));
     }
 }
