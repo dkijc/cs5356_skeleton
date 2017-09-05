@@ -48,6 +48,6 @@ public class CreateReceiptRequestTest {
       receipt.amount = new BigDecimal(12.44);;
 
       validator.validate(receipt);
-      assertThat(receipt.amount.toString(), is(not(equalTo(BigDecimal.class))));
+      assertThat(receipt.amount.toString(), is(not(BigDecimal.class))));
     }
 }
