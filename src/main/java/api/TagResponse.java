@@ -17,12 +17,6 @@ import java.util.List;
  */
 public class TagResponse {
     @JsonProperty
-    String tag;
-
-    @JsonProperty
-    Object receipts;
-
-    @JsonProperty
     String response;
 
     public TagResponse(String response) {
