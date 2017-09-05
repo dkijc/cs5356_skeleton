@@ -14,7 +14,6 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tags extends TableImpl<TagsRecord> {
 
-	private static final long serialVersionUID = 1516672048;
+	private static final long serialVersionUID = -1361534271;
 
 	/**
 	 * The reference instance of <code>public.tags</code>
@@ -61,9 +60,9 @@ public class Tags extends TableImpl<TagsRecord> {
 	public final TableField<TagsRecord, String> TAG = createField("tag", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "");
 
 	/**
-	 * The column <code>public.tags.receipt</code>.
+	 * The column <code>public.tags.receipts</code>.
 	 */
-	public final TableField<TagsRecord, Integer> RECEIPT = createField("receipt", org.jooq.impl.SQLDataType.INTEGER, this, "");
+	public final TableField<TagsRecord, Object> RECEIPTS = createField("receipts", org.jooq.impl.DefaultDataType.getDefaultDataType("array"), this, "");
 
 	/**
 	 * Create a <code>public.tags</code> table reference
@@ -100,7 +99,7 @@ public class Tags extends TableImpl<TagsRecord> {
 	 */
 	@Override
 	public UniqueKey<TagsRecord> getPrimaryKey() {
-		return Keys.CONSTRAINT_27;
+		return Keys.CONSTRAINT_2;
 	}
 
 	/**
@@ -108,15 +107,7 @@ public class Tags extends TableImpl<TagsRecord> {
 	 */
 	@Override
 	public List<UniqueKey<TagsRecord>> getKeys() {
-		return Arrays.<UniqueKey<TagsRecord>>asList(Keys.CONSTRAINT_27);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<ForeignKey<TagsRecord, ?>> getReferences() {
-		return Arrays.<ForeignKey<TagsRecord, ?>>asList(Keys.CONSTRAINT_2);
+		return Arrays.<UniqueKey<TagsRecord>>asList(Keys.CONSTRAINT_2);
 	}
 
 	/**

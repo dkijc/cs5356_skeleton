@@ -2,12 +2,14 @@ package api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import generated.tables.records.TagsRecord;
+import generated.tables.records.ReceiptsRecord;
 import java.sql.Time;
+import java.util.List;
 
 /**
  * This is an API Object.  Its purpose is to model the JSON API that we expose.
  * This class is NOT used for storing in the Database.
- *
+ *s
  * This ReceiptResponse in particular is the model of a Receipt that we expose to users of our API
  *
  * Any properties that you want exposed when this class is translated to JSON must be
@@ -18,14 +20,14 @@ public class TagResponse {
     String tag;
 
     @JsonProperty
-    Integer receiptId;
+    Object receipts;
 
     @JsonProperty
     String response;
 
-    public TagResponse(TagsRecord dbRecord) {
-      this.tag = dbRecord.getTag();
-      this.receiptId = dbRecord.getId();
+    public TagResponse(String tag, List<ReceiptsRecord> rr) {
+      this.tag = tag;
+      this.receipts = rr;
     }
 
     public TagResponse(String response) {

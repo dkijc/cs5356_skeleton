@@ -35,18 +35,12 @@ public class TagController {
 
     @PUT
     @Path("{tag}")
-    public TagResponse togleTag(@PathParam("tag") String tag, int id) {]
+    public TagResponse togleTag(@PathParam("tag") String tag, int id) {
       int receiptId = id;
       List<ReceiptsRecord> receiptRecord = receipts.getReceipt(id);
 
       if(receiptRecord.isEmpty()) {
-        return new TagResponse("Receipt with the id '" + id + "' does not exist");
-      }
-
-      List<TagsRecord> tagRecord = tags.getReceiptWithTag(tag, id);
-
-      if(tagRecord.isEmpty()) {
-        return new TagResponse("Tag and/or Receipt Id do not match");
+        return new TagResponse("Receipt with the id '" + receiptId + "' does not exist");
       }
 
       tags.insert(tag, id);
@@ -56,10 +50,11 @@ public class TagController {
 
     @GET
     @Path("{tag}")
-    public List<TagResponse> getTaggedReceipts(@PathParam("tag") String tag) {
-      List<TagsRecord> tagRecords = tags.getTaggedReceipts(tag);
-      if (tagRecords.isEmpty()) {
-        return new TagResponse(doesNotExist);
+    public TagResponse getReceiptsWithTag(@PathParam("tag") String tag) {
+      if (tags.getTag(tag).isEmpty()) {
+        return new TagResponse("Given tag does not exist");
       }
+
+      return new TagResponse(tag, tags.getReceiptsWithTag(tag));
     }
 }
