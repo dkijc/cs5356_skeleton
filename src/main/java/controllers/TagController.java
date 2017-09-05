@@ -50,11 +50,8 @@ public class TagController {
 
     @GET
     @Path("{tag}")
-    public TagResponse getReceiptsWithTag(@PathParam("tag") String tag) {
-      if (tags.getTag(tag).isEmpty()) {
-        return new TagResponse("Given tag does not exist");
-      }
-
-      return new TagResponse(tag, tags.getReceiptsWithTag(tag));
+    public List<ReceiptResponse> getReceiptsWithTag(@PathParam("tag") String tag) {
+      List<ReceiptsRecord> receiptRecords = tags.getReceiptsWithTag(tag);
+      return receiptRecords.stream().map(ReceiptResponse::new).collect(toList());
     }
 }

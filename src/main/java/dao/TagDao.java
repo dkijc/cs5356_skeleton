@@ -25,58 +25,39 @@ public class TagDao {
         this.dsl = DSL.using(jooqConfig);
     }
 
-    public void insert(String tagName, int receiptId) {
-      if(tagExists(tagName)) {
-        List<TagsRecord> tag = getTag(tagName);
-        ArrayList<Object> receipts = new ArrayList(Arrays.asList(tag.get(0).getReceipts()));
+    public void insert(String tag, int receiptId) {
+      List<Integer> receipts = getReceiptIds(tag);
 
-        //iterate through receipts
-        if(!receipts.contains(receiptId)) {
-          receipts.add(receiptId);
-        } else {
-          receipts.remove(receiptId);
-        }
+      //iterate through receipts
+      if(!receipts.contains(receiptId)) {
+        TagsRecord tagsRecord = dsl
+                .insertInto(TAGS, TAGS.TAG, TAGS.RECEIPTID)
+                .values(tag, receiptId)
+                .returning(TAGS.ID)
+                .fetchOne();
 
-        dsl.update(TAGS)
-        .set(TAGS.RECEIPTS, receipts)
-        .where(TAGS.TAG.eq(tagName));
+        checkState(tagsRecord != null && tagsRecord.getId() != null, "Insert failed");
+      } else {
+        dsl.delete(TAGS)
+        .where(TAGS.RECEIPTID.eq(receiptId))
+        .and(TAGS.TAG.eq(tag))
+        .execute();
       }
-
-      TagsRecord tagsRecord = dsl
-              .insertInto(TAGS, TAGS.TAG, TAGS.RECEIPTS)
-              .values(tagName, receiptId)
-              .returning(TAGS.ID)
-              .fetchOne();
-
-      checkState(tagsRecord != null && tagsRecord.getId() != null, "Insert failed");
     }
 
     public List<TagsRecord> getTag(String tag) {
         return dsl.selectFrom(TAGS).where(TAGS.TAG.eq(tag)).fetch();
     }
-    //
-    // public List<TagsRecord> getAllTags(String tag) {
-    //   return dsl.selectFrom(TAGS).where(TAGS.TAG.eq(tag)).where(TAGS.RECEIPT.eq(receiptId));
-    // }
 
-    public Boolean tagExists(String tagName) {
-      return dsl.select(TAGS.TAG).from(TAGS).where(TAGS.TAG.eq(tagName)).fetchOne() != null ? true : false;
+    public List<Integer> getReceiptIds(String tag) {
+      return dsl.select().from(TAGS).where(TAGS.TAG.eq(tag)).fetch().getValues(TAGS.RECEIPTID);
     }
 
-    public List<ReceiptsRecord> getReceiptsWithTag(String tagName) {
-      List<TagsRecord> tag = getTag(tagName);
-      //int[] receipts = Arrays.stream(tag.get(0).getReceipts()).mapToInt(o -> (int)o).toArray();
-      ArrayList<Object> receipts = new ArrayList(Arrays.asList(tag.get(0).getReceipts()));
-      List<ReceiptsRecord> receiptsRecord = new ArrayList<ReceiptsRecord>();
-
-      // System.out.println(Arrays.toString(receipts));
-      for(Object receiptId : receipts) {
-        // Integer receiptId = (int) receipt;
-        System.out.println(receiptId.toString());
-        List<ReceiptsRecord> record = dsl.selectFrom(RECEIPTS).where(RECEIPTS.ID.eq(Integer.parseInt(receiptId.toString()))).fetch();
-        receiptsRecord.add(record.get(0));
-      }
-
+    public List<ReceiptsRecord> getReceiptsWithTag(String tag) {
+      List<ReceiptsRecord> receiptsRecord = dsl.select().from(RECEIPTS)
+                                                .join(TAGS).onKey()
+                                                .where(TAGS.TAG.eq(tag))
+                                                .fetchInto(RECEIPTS);
       return receiptsRecord;
     }
 }

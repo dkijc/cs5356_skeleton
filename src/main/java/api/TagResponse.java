@@ -25,11 +25,6 @@ public class TagResponse {
     @JsonProperty
     String response;
 
-    public TagResponse(String tag, List<ReceiptsRecord> rr) {
-      this.tag = tag;
-      this.receipts = rr;
-    }
-
     public TagResponse(String response) {
       this.response = response;
     }

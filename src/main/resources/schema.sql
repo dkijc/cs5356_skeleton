@@ -11,7 +11,8 @@ CREATE TABLE receipts (
 CREATE TABLE tags (
   id INT UNSIGNED AUTO_INCREMENT,
   tag VARCHAR(255),
-  receipts ARRAY,
+  receiptId INT UNSIGNED,
+  FOREIGN KEY (receiptId) REFERENCES receipts(id),
 
   PRIMARY KEY (id)
 );

@@ -43,7 +43,11 @@ public class CreateReceiptRequestTest {
     }
 
     @Test
-    public void testMissingTags() {
+    public void testValidAmountType() {
+      CreateReceiptRequest receipt = new CreateReceiptRequest();
+      receipt.amount = "12.40";
 
+      validator.validate(receipt);
+      assertThat(receipt.amount, is(not(equalTo(Integer))))
     }
 }
