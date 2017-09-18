@@ -54,4 +54,11 @@ public class TagController {
       List<ReceiptsRecord> receiptRecords = tags.getReceiptsWithTag(tag);
       return receiptRecords.stream().map(ReceiptResponse::new).collect(toList());
     }
+
+    @GET
+    @Path("/receipt/{receiptId}")
+    public List<TagResponse> getTagsForReceipt(@PathParam("receiptId") int receiptId) {
+      List<TagsRecord> tagsRecords = tags.getTagsForReceipt(receiptId);
+      return tagsRecords.stream().map(TagResponse::new).collect(toList());
+    }
 }

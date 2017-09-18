@@ -19,7 +19,14 @@ public class TagResponse {
     @JsonProperty
     String response;
 
+    @JsonProperty
+    String tag;
+
     public TagResponse(String response) {
       this.response = response;
+    }
+
+    public TagResponse(TagsRecord dbRecord) {
+      this.tag = dbRecord.getTag();
     }
 }
