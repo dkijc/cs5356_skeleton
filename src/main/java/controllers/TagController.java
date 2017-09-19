@@ -37,15 +37,15 @@ public class TagController {
     @Path("{tag}")
     public TagResponse togleTag(@PathParam("tag") String tag, int id) {
       int receiptId = id;
-      List<ReceiptsRecord> receiptRecord = receipts.getReceipt(id);
+      ReceiptsRecord receiptRecord = receipts.getReceipt(id);
 
-      if(receiptRecord.isEmpty()) {
-        return new TagResponse("Receipt with the id '" + receiptId + "' does not exist");
+      if(receiptRecord == null) {
+        return new TagResponse("Receipt with the id '" + receiptId + "' does not exist", tag, receiptId);
       }
 
       tags.insert(tag, id);
 
-      return new TagResponse(successful + tag);
+      return new TagResponse(successful, tag, receiptId);
     }
 
     @GET

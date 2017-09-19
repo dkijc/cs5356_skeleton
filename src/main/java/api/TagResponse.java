@@ -21,12 +21,18 @@ public class TagResponse {
 
     @JsonProperty
     String tag;
+    
+    @JsonProperty
+    Integer receiptId;
 
-    public TagResponse(String response) {
+    public TagResponse(String response, String tag, Integer receiptId) {
       this.response = response;
+      this.tag = tag;
+      this.receiptId = receiptId;
     }
 
     public TagResponse(TagsRecord dbRecord) {
+      this.receiptId = dbRecord.getReceiptid();
       this.tag = dbRecord.getTag();
     }
 }
