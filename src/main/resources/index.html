@@ -11,7 +11,7 @@
     <script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script>
       $(function () {
-        $('#add-Receipt').click(function(){
+        $('#add-receipt').click(function(){
           $('#addbox').fadeToggle();
         });
         $('#cancel-receipt').click(function() {
@@ -19,13 +19,13 @@
           $('#amount').val('')
           $('#addbox').fadeToggle();
         });
-      
+
         $('#save-receipt').click(function(){
           let send = {
             merchant: $('#merchant').val(),
             amount: $('#amount').val()
           }
-          
+
           $('#merchant').val('')
           $('#amount').val('')
 
@@ -43,7 +43,7 @@
 
         var receiptList = $('#receiptList');
         var items = [];
-        
+
         $.getJSON("/receipts", function(result) {
           postGetJSON(result, getTags)
         });
@@ -75,11 +75,11 @@
                         contentType: "application/json",
                         dataType:"json",
                         success: function(result){
-                          receipt.append("<span id='" + result.tag + "' class='tag' style='padding:2px; margin:2px; background-color:#e3e3e3; cursor:pointer;'>"+ result.tag +"</span>");
+                          receipt.append("<span id='" + result.tag + "' class='tag tagValue' style='padding:2px; margin:2px; background-color:#e3e3e3; cursor:pointer;'>"+ result.tag +"</span>");
                           addClicksToTags(result.tag);
                         }
                       });
-                      
+
                       $(this).val('');
                       $(this).hide();
                     }
@@ -87,16 +87,16 @@
               });
             });
         }
-        
+
         function postGetJSON(result, callback) {
           var countData = result.length;
           $.each( result, function( key, val ) {
-            appendItemsToReceipt(val);    
+            appendItemsToReceipt(val);
           });
 
           callback(receiptList[0].children.length)
         }
-        
+
         function getTags(receiptCount) {
           for(var i = 1; i < receiptCount + 1; i++) {
             setInterval(getReceiptTags(i, receiptCount), 300);
@@ -106,12 +106,12 @@
         function getReceiptTags(id, count) {
           $.getJSON("http://localhost:8080/tags/receipt/" + id, function(result) {
             addTags(result, addClicksToTags)
-            
-          });  
-          
+
+          });
+
           function addTags(result, callback){
             $.each(result, function( key, val ) {
-              $("#receipt" + val.receiptId).append("<span id='" + val.tag + "' class='tag' style='padding:2px; margin:2px; background-color:#e3e3e3; cursor:pointer;'>"+ val.tag +"</span>");
+              $("#receipt" + val.receiptId).append("<span id='" + val.tag + "' class='tag tagValue' style='padding:2px; margin:2px; background-color:#e3e3e3; cursor:pointer;'>"+ val.tag +"</span>");
               callback(val.tag);
             });
           }
@@ -144,7 +144,7 @@
 
     <section class="main-content">
       <blockquote>
-        <p>My Receipts </br><input id="add-Receipt" type="button" cursor="pointer" value="ADD" /></p>
+        <p>My Receipts </br><input id="add-receipt" type="button" cursor="pointer" value="ADD" /></p>
 
         <div id="addbox" style="display:none">
           <input type="text" id="merchant" style="padding:4px; margin:4px;" /></br>
