@@ -26,9 +26,14 @@ public class ReceiptController {
     }
 
     @POST
-    public ReceiptResponse createReceipt(@Valid @NotNull CreateReceiptRequest receipt) {
-        ReceiptsRecord receiptRecord = receipts.insert(receipt.merchant, receipt.amount);
-	return new ReceiptResponse(receiptRecord);
+    public int createReceipt(@Valid @NotNull CreateReceiptRequest receipt) {
+        return receipts.insert(receipt.merchant, receipt.amount);
+    }
+
+    @Path("{id}")
+    @GET
+    public ReceiptResponse retrieveReceipt(@PathParam("id") int receiptId) {
+        return new ReceiptResponse(receipts.retrieveReceiptsWithTags(receiptId));
     }
 
     @GET

@@ -17,7 +17,7 @@ import java.sql.Time;
  */
 public class ReceiptResponse {
     @JsonProperty
-    Integer receiptId;
+    Integer id;
 
     @JsonProperty
     String merchantName;
@@ -32,6 +32,6 @@ public class ReceiptResponse {
         this.merchantName = dbRecord.getMerchant();
         this.value = dbRecord.getAmount();
         this.created = dbRecord.getUploaded();
-        this.receiptId = dbRecord.getId();
+        this.id = dbRecord.getId();
     }
 }

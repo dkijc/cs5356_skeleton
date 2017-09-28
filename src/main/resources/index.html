@@ -49,43 +49,45 @@
         });
 
         function appendItemsToReceipt(item) {
-          var receipt = jQuery('<div/>', {
-             "class": "receipt",
-             "id": 'receipt' + item.receiptId
-             });
-          receipt.append("</br><span class='time'>" + item.created + "</span>");
-          receipt.append("<span class='merchant'>" + item.merchantName + "</span>" );
-          receipt.append("<span class='amount'>" + item.value + "</span>" );
-          receipt.append("<input class='add-tag' value='Add Tag' type='button' />" );
-          receipt.append("<input type='text' class='tag_input' style='display:none;' />" );
-          receipt.appendTo(receiptList);
-          $('.add-tag').click(function() {
-              $(this).siblings('.tag_input').show();
+          $.getJSON('/receipts/' + item, function(item){
+            var receipt = jQuery('<div/>', {
+               "class": "receipt",
+               "id": 'receipt' + item.id
+               });
+            receipt.append("</br><span class='time'>" + item.created + "</span>");
+            receipt.append("<span class='merchant'>" + item.merchantName + "</span>" );
+            receipt.append("<span class='amount'>" + item.value + "</span>" );
+            receipt.append("<input class='add-tag' value='Add Tag' type='button' />" );
+            receipt.append("<input type='text' class='tag_input' style='display:none;' />" );
+            receipt.appendTo(receiptList);
+            $('.add-tag').click(function() {
+                $(this).siblings('.tag_input').show();
 
-              $(this).siblings('.tag_input').on('keyup', function (e) {
-                  if (e.keyCode == 13) {
-                    let receiptStr = receipt.prop('id');
-                    let receiptInt = receiptStr.substring(7, receiptStr.length);
-                    tagName = $(this).val();
-                    if(tagName != '') {
-                      $.ajax({
-                        url: "/tags/" + tagName,
-                        type: "PUT",
-                        data: receiptInt,
-                        contentType: "application/json",
-                        dataType:"json",
-                        success: function(result){
-                          receipt.append("<span id='" + result.tag + "' class='tag tagValue' style='padding:2px; margin:2px; background-color:#e3e3e3; cursor:pointer;'>"+ result.tag +"</span>");
-                          addClicksToTags(result.tag);
-                        }
-                      });
+                $(this).siblings('.tag_input').on('keyup', function (e) {
+                    if (e.keyCode == 13) {
+                      let receiptStr = receipt.prop('id');
+                      let receiptInt = receiptStr.substring(7, receiptStr.length);
+                      tagName = $(this).val();
+                      if(tagName != '') {
+                        $.ajax({
+                          url: "/tags/" + tagName,
+                          type: "PUT",
+                          data: receiptInt,
+                          contentType: "application/json",
+                          dataType:"json",
+                          success: function(result){
+                            receipt.append("<span id='" + result.tag + "' class='tag tagValue' style='padding:2px; margin:2px; background-color:#e3e3e3; cursor:pointer;'>"+ result.tag +"</span>");
+                            addClicksToTags(result.tag);
+                          }
+                        });
 
-                      $(this).val('');
-                      $(this).hide();
+                        $(this).val('');
+                        $(this).hide();
+                      }
                     }
-                  }
+                });
               });
-            });
+          })
         }
 
         function postGetJSON(result, callback) {
@@ -118,7 +120,6 @@
         }
 
         function addClicksToTags(tagName) {
-          console.log(tagName)
             $('#' + tagName).click(function(){
               let receiptStr = $(this).closest('div').prop('id');
               let receiptInt = receiptStr.substring(7, receiptStr.length);

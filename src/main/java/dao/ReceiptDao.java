@@ -19,7 +19,7 @@ public class ReceiptDao {
         this.dsl = DSL.using(jooqConfig);
     }
 
-    public ReceiptsRecord insert(String merchantName, BigDecimal amount) {
+    public int insert(String merchantName, BigDecimal amount) {
         ReceiptsRecord receiptsRecord = dsl
                 .insertInto(RECEIPTS, RECEIPTS.MERCHANT, RECEIPTS.AMOUNT)
                 .values(merchantName, amount)
@@ -28,7 +28,11 @@ public class ReceiptDao {
 
         checkState(receiptsRecord != null && receiptsRecord.getId() != null, "Insert failed");
 
-        return getReceipt(receiptsRecord.getId());
+        return receiptsRecord.getId();
+    }
+
+    public ReceiptsRecord retrieveReceiptsWithTags(int id) {
+        return getReceipt(id);
     }
 
     public List<ReceiptsRecord> getAllReceipts() {
