@@ -40,6 +40,7 @@
       }
 
       function startVideo() {
+        $('#video-box').show();
           navigator.mediaDevices.getUserMedia({video: {facingMode: {exact: "environment"}}})
               .then(attachMediaStream)
               .catch(error => {
@@ -112,33 +113,27 @@
 
         $('#save-receipt').click(function(){
           let numExp = '^[$]?(([1-9]\d{0,2}{,\d{3}}*)|(([1-9]\d*)?\d))(\.\d\d)?$';
-          //let isNumber = new RegExp('^([1-9]\d{0,2}{,\d{3}}*)|(([1-9]\d*)?\d))(\.\d\d)?$');
+        
+          let send = {
+            merchant: $('#merchant').val(),
+            amount: $('#amount').val()
+          }
 
-          //if($('#amount').val().match(numExp)) {
-            let send = {
-              merchant: $('#merchant').val(),
-              amount: $('#amount').val()
+          $('#merchant').val('')
+          $('#amount').val('')
+          $('#error').val('');
+          $('#error').fadeToggle();
+
+          $.ajax({
+            url: "/receipts",
+            type: "POST",
+            data: JSON.stringify(send),
+            contentType: "application/json",
+            dataType:"json",
+            success: function( result ) {
+              appendItemsToReceipt('/receipts/' + result);
             }
-
-            $('#merchant').val('')
-            $('#amount').val('')
-            $('#error').val('');
-            $('#error').fadeToggle();
-
-            $.ajax({
-              url: "/receipts",
-              type: "POST",
-              data: JSON.stringify(send),
-              contentType: "application/json",
-              dataType:"json",
-              success: function( result ) {
-                appendItemsToReceipt('/receipts/' + result);
-              }
-            });
-          // } else {
-          //   $('#error').fadeToggle();
-          //   $('#error').val('invalid amount');
-          // }
+          });
         });
 
         var receiptList = $('#receiptList');
@@ -245,9 +240,8 @@
   </head>
   <body>
     <section class="page-header">
-      <input id="start-video-section" type="button" cursor="pointer" value="Capture!" />
+      <button id="start-camera">Start Video</button>
       <div id="video-box" style="display:none">
-        <button id="start-camera">Start Video</button>
         <button id="take-pic" disabled="true">Oh Snap!</button>
         <button id="take-pic-cancel" disabled="true">Cancel!</button>
         <br>
