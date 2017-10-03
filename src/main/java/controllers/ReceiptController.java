@@ -13,8 +13,6 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-
-
 @Path("/receipts")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,7 +28,7 @@ public class ReceiptController {
         return receipts.insert(receipt.merchant, receipt.amount);
     }
 
-    @Path("{id}")
+    @Path("/{id}")
     @GET
     public ReceiptResponse retrieveReceipt(@PathParam("id") int receiptId) {
         return new ReceiptResponse(receipts.retrieveReceiptsWithTags(receiptId));

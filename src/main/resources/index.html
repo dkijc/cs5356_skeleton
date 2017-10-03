@@ -1,16 +1,106 @@
 <!DOCTYPE html>
+<!-- hahahahahhaha-->
 <html lang="en-us">
   <head>
     <meta charset="UTF-8">
     <title>Receipt List</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
-    <link rel="stylesheet" href="css/normalize.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="css/cayman.css">
     <script data-require="jquery@*" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <style>
+      body {
+          text-align: center;
+      }
+
+      video {
+          width: 550px;
+          height: 450px;
+          border: 1px solid black;
+      }
+
+      #vidwrap {
+          margin: 20px 0;
+      }
+
+      #start-camera, #take-pic, #take-pic-cancel {
+          height: 3em;
+      }
+    </style>
     <script>
+      let imageCapture;
+      let track;
+
+      function attachMediaStream(mediaStream) {
+          $('video')[0].srcObject = mediaStream;
+
+          // Saving the track allows us to capture a photo
+          track = mediaStream.getVideoTracks()[0];
+          imageCapture = new ImageCapture(track);
+      }
+
+      function startVideo() {
+          navigator.mediaDevices.getUserMedia({video: {facingMode: {exact: "environment"}}})
+              .then(attachMediaStream)
+              .catch(error => {
+                  navigator.mediaDevices.getUserMedia({video: true})
+                      .then(attachMediaStream)
+                      .catch(error => {
+                          console.log('you are fooked');
+                      })
+              })
+
+          $("#take-pic-cancel").prop('disabled', false);
+      }
+
+      function stopVideo() {
+          $('video')[0].srcObject.getVideoTracks()[0].stop();
+          $('#video-box').fadeToggle();
+      }
+
+      function takeSnapshot() {
+          // create a CANVAS element that is same size as the image
+          imageCapture.grabFrame()
+          .then(img => {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+
+              canvas.getContext('2d').drawImage(img, 0, 0);
+              const base64EncodedImageData = canvas.toDataURL('image/png').split(',')[1];
+
+              $.ajax({
+                  url: "/images",
+                  type: "POST",
+                  data: base64EncodedImageData,
+                  contentType: "text/plain",
+                  error: function(result) {
+                    console.log(result)
+                  }
+             })
+              .then(response => {
+                  // $('video').after(`<div>got response: <pre>${JSON.stringify(response)}</pre></div>`);
+                  stopVideo()
+                  $('#video-box').hide();
+                  $('#addbox').show();
+                  $('#merchant').val(response.merchantName);
+                  $('#amount').val(response.amount);
+              })
+              .always(() => console.log('request complete'));
+
+              // For debugging, you can uncomment this to see the frame that was captured
+              // $('BODY').append(canvas);
+          });
+
+      }
       $(function () {
+        $('#start-camera').on('click', startVideo);
+        $('video').on('play', () => $('#take-pic').prop('disabled', false));
+        $('#take-pic').on('click', takeSnapshot);
+        $('#start-video-section').click(function(){
+          $('#video-box').fadeToggle();
+        });
+        $('#take-pic-cancel').click(stopVideo);
         $('#add-receipt').click(function(){
           $('#addbox').fadeToggle();
         });
@@ -21,46 +111,61 @@
         });
 
         $('#save-receipt').click(function(){
-          let send = {
-            merchant: $('#merchant').val(),
-            amount: $('#amount').val()
-          }
+          let numExp = '^[$]?(([1-9]\d{0,2}{,\d{3}}*)|(([1-9]\d*)?\d))(\.\d\d)?$';
+          //let isNumber = new RegExp('^([1-9]\d{0,2}{,\d{3}}*)|(([1-9]\d*)?\d))(\.\d\d)?$');
 
-          $('#merchant').val('')
-          $('#amount').val('')
-
-          $.ajax({
-            url: "/receipts",
-            type: "POST",
-            data: JSON.stringify(send),
-            contentType: "application/json",
-            dataType:"json",
-            success: function( result ) {
-              appendItemsToReceipt(result);
+          //if($('#amount').val().match(numExp)) {
+            let send = {
+              merchant: $('#merchant').val(),
+              amount: $('#amount').val()
             }
-          });
+
+            $('#merchant').val('')
+            $('#amount').val('')
+            $('#error').val('');
+            $('#error').fadeToggle();
+
+            $.ajax({
+              url: "/receipts",
+              type: "POST",
+              data: JSON.stringify(send),
+              contentType: "application/json",
+              dataType:"json",
+              success: function( result ) {
+                appendItemsToReceipt('/receipts/' + result);
+              }
+            });
+          // } else {
+          //   $('#error').fadeToggle();
+          //   $('#error').val('invalid amount');
+          // }
         });
 
         var receiptList = $('#receiptList');
         var items = [];
 
         $.getJSON("/receipts", function(result) {
-          postGetJSON(result, getTags)
+          postGetJSON(result)
         });
 
-        function appendItemsToReceipt(item) {
-          $.getJSON('/receipts/' + item, function(item){
-            var receipt = jQuery('<div/>', {
+        function appendItemsToReceipt(url, id, callback) {
+          $.ajax({
+            url: url,
+            type: "GET",
+            contentType:"application/json",
+            dataType:"json",
+            success: function (item) {
+              var receipt = jQuery('<div/>', {
                "class": "receipt",
                "id": 'receipt' + item.id
                });
-            receipt.append("</br><span class='time'>" + item.created + "</span>");
-            receipt.append("<span class='merchant'>" + item.merchantName + "</span>" );
-            receipt.append("<span class='amount'>" + item.value + "</span>" );
-            receipt.append("<input class='add-tag' value='Add Tag' type='button' />" );
-            receipt.append("<input type='text' class='tag_input' style='display:none;' />" );
-            receipt.appendTo(receiptList);
-            $('.add-tag').click(function() {
+              receipt.append("</br><span class='time'>" + item.created + "</span>");
+              receipt.append("<span class='merchant'>" + item.merchantName + "</span>" );
+              receipt.append("<span class='amount'>" + item.value + "</span>" );
+              receipt.append("<input class='add-tag' value='Add Tag' type='button' />" );
+              receipt.append("<input type='text' class='tag_input' style='display:none;' />" );
+              receipt.appendTo(receiptList);
+              $('.add-tag').click(function() {
                 $(this).siblings('.tag_input').show();
 
                 $(this).siblings('.tag_input').on('keyup', function (e) {
@@ -87,16 +192,18 @@
                     }
                 });
               });
-          })
+
+              callback(id);
+            }, 
+            async: true
+          });
         }
 
-        function postGetJSON(result, callback) {
+        function postGetJSON(result) {
           var countData = result.length;
-          $.each( result, function( key, val ) {
-            appendItemsToReceipt(val);
+          $.each(result, function( key, val ) {
+            appendItemsToReceipt('/receipts/' + val.id, val.id, getReceiptTags);
           });
-
-          callback(receiptList[0].children.length)
         }
 
         function getTags(receiptCount) {
@@ -106,9 +213,8 @@
         }
 
         function getReceiptTags(id, count) {
-          $.getJSON("http://localhost:8080/tags/receipt/" + id, function(result) {
+          $.getJSON("tags/receipt/" + id, function(result) {
             addTags(result, addClicksToTags)
-
           });
 
           function addTags(result, callback){
@@ -139,8 +245,16 @@
   </head>
   <body>
     <section class="page-header">
-      <h1 class="project-name">CS5456: Receipt Reader</h1>
-      <h2 class="project-tagline">Coolest reader and a tagger</h2>
+      <input id="start-video-section" type="button" cursor="pointer" value="Capture!" />
+      <div id="video-box" style="display:none">
+        <button id="start-camera">Start Video</button>
+        <button id="take-pic" disabled="true">Oh Snap!</button>
+        <button id="take-pic-cancel" disabled="true">Cancel!</button>
+        <br>
+        <div id="vidwrap">
+          <video autoplay></video>
+        </div>
+      </div>
     </section>
 
     <section class="main-content">
@@ -152,6 +266,7 @@
           <input type="text" id="amount" style="padding:4px; margin:4px;" /></br>
           <input type="button" id="save-receipt" type="submit" value="Save" />
           <input type="button" id="cancel-receipt" value="Cancel"/>
+          <span id="error" style="display:none;"></span>
         </div>
       </blockquote>
       <div id="receiptList"></div>

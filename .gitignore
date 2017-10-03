@@ -4,7 +4,7 @@
 
 # This is a cache for gradle
 .gradle
-
+*.json
 # These are compiled artifacts
 /build
 

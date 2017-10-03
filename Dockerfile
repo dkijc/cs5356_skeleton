@@ -1,4 +1,4 @@
-# WARNING!  I am on a low-bandwidth internet connection and have not been able to build this
+#WARNING!  I am on a low-bandwidth internet connection and have not been able to build this
 # image myself yet.  Almost certainly it won't work, but the ideas are right
 
 
@@ -12,6 +12,10 @@ ADD build/distributions/skeleton.tar  /
 # our appconfig.yml (which is not part of the .tar that gradle builds) so we must
 # add it explicitly
 ADD appconfig.yml /skeleton/
+
+# Add your GCP Service Account API File to the Docker Image
+ADD gc_api_file.json /skeleton/gc_api_file.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/skeleton/gc_api_file.json
 
 # Convenience if we ever want to log into the image and snoop around
 WORKDIR /skeleton
